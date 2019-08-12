@@ -1,3 +1,4 @@
 ${PODS_ROOT}/Target Support Files/Pods-NewsScrollApp/Pods-NewsScrollApp-frameworks.sh
+${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework
 ${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
 ${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework

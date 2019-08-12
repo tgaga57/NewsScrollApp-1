@@ -9,15 +9,21 @@
 import UIKit
 import XLPagerTabStrip
 import WebKit
+import NVActivityIndicatorView
 
 class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDataSource, UITableViewDelegate, WKNavigationDelegate, XMLParserDelegate{
 
     // 引っ張って更新
     var refreshControl: UIRefreshControl!
+    
+    // インジゲーターの変数
+    var activityIndicatorView: NVActivityIndicatorView!
 
     // テーブルビューのインスタンスを取得
     var tableView: UITableView = UITableView()
-
+    // ロード時画面のview
+    var indicatorBackgroundView: UIView!
+    
     // XMLParserのインスタンスを取得
     var parser = XMLParser()
 
@@ -69,10 +75,39 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         // 最初は隠す（tableviewが表示されるのを邪魔しないように）
         webView.isHidden = true
         toolBar.isHidden = true
+        
+        activityIndicatorView = NVActivityIndicatorView(frame: CGRect(x: 125, y: 100, width: 60, height: 60))
 
         parseUrl()
     }
 
+    // インディゲーターを表示
+    func showLoadIndicator() {
+        // インジケータが表示された時の背景
+        indicatorBackgroundView = UIView(frame: self.view.bounds)
+        indicatorBackgroundView?.backgroundColor = UIColor.black
+        indicatorBackgroundView?.alpha = 0.4
+        indicatorBackgroundView?.tag = 1
+
+        // インジケータと背景を接続
+        self.view.addSubview(indicatorBackgroundView)
+        indicatorBackgroundView?.addSubview(activityIndicatorView)
+//
+//        //起動
+        activityIndicatorView.startAnimating()
+    }
+
+    // インジケータを非表示にする
+    func stopLoadIndicator() {
+        // インジケータを消すか判断
+        if let viewWithTag = self.view.viewWithTag(1) {
+            viewWithTag.removeFromSuperview()
+        }
+         // 消えます
+        activityIndicatorView.stopAnimating()
+
+    }
+    
     @objc func refresh() {
         // 2秒後にdelayを呼ぶ
         perform(#selector(delay), with: nil, afterDelay: 2.0)
@@ -158,7 +193,7 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
 
         // セルの色
-        cell.backgroundColor = #colorLiteral(red: 0.8321695924, green: 0.985483706, blue: 0.4733308554, alpha: 1)
+        cell.backgroundColor = #colorLiteral(red: 0.8635054231, green: 1, blue: 0.8127393723, alpha: 1)
 
         // 記事テキストサイズとフォント
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
@@ -184,6 +219,10 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         let urlRequest = NSURLRequest(url: url)
         // ここでロード
         webView.load(urlRequest as URLRequest)
+        // セルをタップした時にインジケータを表示
+        showLoadIndicator()
+        // セルを押した後、他のセルを押せなくする
+        self.tableView.allowsSelection = false
     }
 
     // ページの読み込み完了時に呼ばれる
@@ -194,6 +233,11 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         toolBar.isHidden = false
         // webviewを表示する
         webView.isHidden = false
+        
+        // インジケータを非表示にする
+        stopLoadIndicator()
+        // セルを再び押せるようにする
+        self.tableView.allowsSelection = true
     }
 
     // キャンセル

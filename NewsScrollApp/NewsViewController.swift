@@ -75,9 +75,10 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         // 最初は隠す（tableviewが表示されるのを邪魔しないように）
         webView.isHidden = true
         toolBar.isHidden = true
-        
-        activityIndicatorView = NVActivityIndicatorView(frame: CGRect(x: 125, y: 100, width: 60, height: 60))
-        
+        // インジゲーターのサイズ
+        activityIndicatorView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 100, width: 60, height: 60))
+        // インジゲーターをセンターへ
+         activityIndicatorView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
         parseUrl()
     }
     

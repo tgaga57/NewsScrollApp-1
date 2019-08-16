@@ -38,7 +38,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
     // XMLファイルのリンク情報
     var linkString: String = ""
     
-    
     // webview
     @IBOutlet weak var webView: WKWebView!
     
@@ -106,7 +105,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         }
         // 消えます
         activityIndicatorView.stopAnimating()
-        
     }
     
     @objc func refresh() {
